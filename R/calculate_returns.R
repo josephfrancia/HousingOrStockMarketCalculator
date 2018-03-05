@@ -1,56 +1,52 @@
-computeStockMarketReturns <- function(initialInvestment,
+computeStockMarketReturns <- function(timeHorizon = 30,
+                                      initialInvestment,
                                       marketReturn = .05,
-                                      timeHorizon = 30,
                                       capitalGains = .15,
                                       managementFees = .004) {
 
-  return((initialInvestment * (1 + marketReturn - managementFees)^timeHorizon) - 
-        (((initialInvestment * (1 + marketReturn - managementFees)^timeHorizon) - initialInvestment) * 
+  return((initialInvestment * (1 + marketReturn - managementFees)^timeHorizon) -
+        (((initialInvestment * (1 + marketReturn - managementFees)^timeHorizon) - initialInvestment) *
           capitalGains))
 }
 
+computeHousingReturns <- function(time, initialHousingValue,
+                                  propertyTaxes, housingReturn,
+                                  capGains, annualRentPayment,
+                                  rentIncreasePercent, marketRate,
+                                  incomeTax, management, principalOnLoan, loanDuration, loanInterest) {
 
-computeHousingReturns <- function(homeValue,
-                                  downPayment,
-                                  mortgageValue,
-                                  mortgageInterest = .0392,
-                                  initialAnnualRentPayment,
-                                  rentIncreaseRate = 0,
-                                  marketReturn = .05,
-                                  homeValueAppreciation = .02,
-                                  timeHorizonInYears = 30,
-                                  loanDurationInYears = 30,
-                                  topIncomeTaxRate = .3,
-                                  capitalGains = .15) {
+  accumulatedValueofHome <- computeAccumulatedValueOfHome(initialValue = initialHousingValue,
+                                                          propertyTax = propertyTaxes,
+                                                          timeHorizon = time,
+                                                          capitalGains = capGains,
+                                                          propertyAppreciation = housingReturn)
 
-  accumulatedValueofHome <- homeValue * (1 + homeValueAppreciation)^timeHorizonInYears -
-    ((capitalGains) *  (homeValue * (1 + homeValueAppreciation)^timeHorizonInYears - homeValue))
+  annualMortgage <- computeAnnualMortgagePayments(principalRemaining = principalOnLoan,
+                                                         loanDurationInYears = loanDuration,
+                                                         annualInterestRate = loanInterest)
 
-  annualMortgagePayment <- computeAnnualMortgagePayments(mortgageValue,
-                                                         loanDurationInYears,
-                                                         mortgageInterest)
-
-  accumulatedValueofRent <- computeAccumulatedValueOfRent(initialAnnualRentPayment,
-                                                          rentIncreaseRate,
-                                                          marketReturn,
-                                                          timeHorizonInYears,
-                                                          topIncomeTaxRate,
-                                                          annualMortgagePayment)
+  accumulatedValueofRent <- computeAccumulatedValueOfRent(initialAnnualRentPayment = annualRentPayment,
+                                                          rentIncreaseRate = rentIncreasePercent,
+                                                          marketReturn = marketRate,
+                                                          timeHorizon = time,
+                                                          topIncomeTaxRate = incomeTax,
+                                                          annualMortgagePayment = annualMortgage,
+                                                          managementFees = management)
 
   return(accumulatedValueofHome + accumulatedValueofRent)
 }
 
-computeAccumulatedValueOfHome <- function(initialValue, 
-                                          propertyTax, 
+computeAccumulatedValueOfHome <- function(initialValue,
+                                          propertyTax,
                                           timeHorizon,
                                           capitalGains,
                                           propertyAppreciation){
-  
-  futureValueOfHome <- initialValue * (1 + propertyAppreciation - propertyTax)^timeHorizon - 
+
+  futureValueOfHome <- initialValue * (1 + propertyAppreciation - propertyTax)^timeHorizon -
     capitalGains * (initialValue * (1 + propertyAppreciation - propertyTax)^timeHorizon - initialValue)
-  
+
   return(futureValueOfHome)
-  
+
 }
 
 
@@ -60,22 +56,22 @@ computeAccumulatedValueOfRent <- function(initialAnnualRentPayment,
                                           marketReturn,
                                           timeHorizon,
                                           topIncomeTaxRate,
-                                          annualMortgagePayment, 
+                                          annualMortgagePayment,
                                           managementFees) {
 
-  accumulatedValueOfRentBeforeMortgagePaidOff <- (initialAnnualRentPayment - annualMortgagePayment) * (1 - topIncomeTaxRate) * (1 - managementFees) * 
+  accumulatedValueOfRentBeforeMortgagePaidOff <- (initialAnnualRentPayment - annualMortgagePayment) * (1 - topIncomeTaxRate) * (1 - managementFees) *
     (((1 + marketReturn)^(min(timeHorizon, 30)) -
     (1 + rentIncreaseRate)^(min(timeHorizon, 30))) / (marketReturn - rentIncreaseRate))
 
   accumulatedValueOfRentAfterMortgagePaidOff <- 0
 
   if(timeHorizon > 30) {
-    annualRentPaymentAfter30Years <-  ((1 - topIncomeTaxRate) * (1 - managementFees) * 
+    annualRentPaymentAfter30Years <-  ((1 - topIncomeTaxRate) * (1 - managementFees) *
                                          initialAnnualRentPayment * (1 + rentIncreaseRate)^30)
-    
+
     accumulatedValueOfRentAfterMortgagePaidOff <- annualRentPaymentAfter30Years * (((1 + marketReturn)^(timeHorizon - 30) -
     (1 + rentIncreaseRate)^(timeHorizon - 30)) / (marketReturn - rentIncreaseRate))
-    
+
     accumulatedValueOfRentBeforeMortgagePaidOff <- accumulatedValueOfRentBeforeMortgagePaidOff * (1 + marketReturn)^(timeHorizon - 30)
   }
 
