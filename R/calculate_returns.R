@@ -50,7 +50,7 @@ computeAccumulatedValueOfHome <- function(initialValue,
 }
 
 
-### Using growth annuity payment formula from http://financeformulas.net/Growing-Annuity-Payment-from-Future-Value.html
+### Using growing annuity payment formula from http://financeformulas.net/Growing-Annuity-Payment-from-Future-Value.html
 computeAccumulatedValueOfRent <- function(initialAnnualRentPayment,
                                           rentIncreaseRate,
                                           marketReturn,

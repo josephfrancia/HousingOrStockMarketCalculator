@@ -1,26 +1,27 @@
-ui <- fluidPage(
-  sidebarLayout(
-    sidebarPanel(
-      h3("Shared Assumptions"),
-      numericInput("time", label = h3("Time Horizon"), value = 30),
-      numericInput("initialInvestment", label = h3("Time Horizon"), value = 100000),
-      numericInput("capitalGains", label = h3("Capital Gains"), value = .15),
-      numericInput("marketReturn", label = h3("Market Return"), value = .05),
-      h3("Stock Market Assumptions"),
-      numericInput("time", label = h3("Time Horizon"), value = 30),
-      numericInput("marketReturn", label = h3("Market Return"), value = .05),
-      numericInput("assetManagementFees", label = h3("Asset Management Fees"), value = .004),
-      h3("Housing Rental Market Assumptions"),
-      numericInput("propertyTaxes", label = h3("Property Taxes"), value = .05),
-      numericInput("housingAppreciation", label = h3("Housing Appreciation"), value = .01),
-      numericInput("annualRentPayment", label = h3("Annual Rent Payment"), value = 10000),
-      numericInput("annualRentIncrease", label = h3("Annual Rent Increase"), value = .005),
-      numericInput("incomeTax", label = h3("Top Income Tax Rate"), value = .30),
-      numericInput("propertyManagement", label = h3("Property Management Fees"), value = .07),
-      numericInput("principalOnLoan", label = h3("Mortgage"), value = .07),
-      numericInput("loanDuration", label = h3("Mortgage"), value = 30),
-      numericInput("loanInterest", label = h3("Mortgage"), value = .05)
-    ),
-    mainPanel(plotOutput("distPlot"))
+ui <- shinyUI(fluidPage(
+  titlePanel("Investing in a Rental Property or in the Stock Market?"),
+  plotOutput("distPlot"),
+  fluidRow(
+    column(3, h4("Shared Assumptions"),
+           numericInput("time", label = h5("Time Horizon"), value = 30),
+           numericInput("initialInvestment", label = h5("Initial Investment"), value = 100000),
+           numericInput("capitalGains", label = h5("Capital Gains"), value = .15),
+           numericInput("marketReturn", label = h5("Market Return"), value = .05)),
+    column(3, h4("Housing Rental Market Assumptions"),
+             numericInput("propertyTaxes", label = h5("Property Taxes"), value = .01),
+             numericInput("housingAppreciation", label = h5("Housing Appreciation"), value = .02),
+             numericInput("annualRentPayment", label = h5("Annual Rent Payment"), value = 10000),
+             numericInput("annualRentIncrease", label = h5("Annual Rent Increase"), value = .005),
+             numericInput("incomeTax", label = h5("Top Income Tax Rate"), value = .30)),
+    column(3, h4("Housing Rental Market Assumptions (Continued)"),
+             numericInput("propertyManagement", label = h5("Property Management Fees"), value = .07),
+             numericInput("principalOnLoan", label = h5("Mortgage"), value = 80000),
+             numericInput("loanDuration", label = h5("Mortgage Duration"), value = 30),
+             numericInput("loanInterest", label = h5("Mortgage Interest"), value = .05)),
+    column(3, h4("Stock Market Assumptions"),
+           numericInput("assetManagementFees", label = h5("Asset Management Fees"), value = .004)
+    )
   )
-)
+))
+
+

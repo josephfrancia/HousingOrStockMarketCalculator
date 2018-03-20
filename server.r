@@ -1,4 +1,5 @@
 devtools::load_all(".")
+library(scales)
 
 server <- function(input, output) {
 
@@ -16,6 +17,9 @@ server <- function(input, output) {
   output$distPlot <- renderPlot({
     ggplot(df(), aes(time)) +
       geom_line(aes(y = housing, colour = "housing")) +
-      geom_line(aes(y = stocks, colour = "stocks"))
+      geom_line(aes(y = stocks, colour = "stocks")) +
+      scale_y_continuous(label=dollar_format()) +
+      xlab("Time Horizon") +
+      ylab("Future Value in Dollars")
   })
 }
