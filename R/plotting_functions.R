@@ -27,13 +27,3 @@ plotHousingReturns <- function(time, initialHousingValue, propertyTaxes, housing
 
   return(data$assetValue)
 }
-
-df <- data.frame(time = 1:30,
-                 housing = plotHousingReturns(30, 100000 ,.01, .02, .15,
-                                              800 * 12, .005, .06, .3, .07, 80000, 30, .05),
-                 stocks = plotStockMarketReturns(30, 100000, .06, .15, .0015))
-
-
-ggplot(df, aes(time)) +
-  geom_line(aes(y = housing, colour = "housing")) +
-  geom_line(aes(y = stocks, colour = "stocks"))
