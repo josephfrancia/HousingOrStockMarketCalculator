@@ -1,81 +1,71 @@
-test_that("computeStockMarketReturns works as expected", {
-  investment = 100
-  return = .05
-  time = 4
-  fees = .006
-  taxes = .15
+test_that("countingHandsWithAces works as expected", {
+  sampleHand1 <- c("A", "9")
+  sampleHand2 <- c("A", "A", "A")
+  sampleHand3 <- c("A", "10", "A", "A", "A", "A", "A", "10")
 
-  actual <- computeStockMarketReturns(initialInvestment = investment,
-                                      marketReturn = return,
-                                      timeHorizon = time,
-                                      capitalGains = taxes,
-                                      managementFees = fees
-                                      )
+  actual <- c(countingHandsWithAces(sampleHand1), 
+              countingHandsWithAces(sampleHand2), 
+              countingHandsWithAces(sampleHand3))
 
-  expected <- investment * (1 + return - fees)^time - ((investment * (1 + return - fees)^time) - investment) * taxes
+  expected <- c(20, 13, 26)
 
   expect_equal(actual, expected)
 })
 
-test_that("computeAnnualMortgagePayments works as expected", {
-  principal = 100
-  annualRate = .05
-  loanDuration = 30
-
-  actual <- computeAnnualMortgagePayments(principalRemaining = principal,
-                                          loanDurationInYears = loanDuration,
-                                          annualInterestRate = annualRate)
-
-  expected <- 12 * principal * ((annualRate / 12) * (1 + annualRate / 12)^360) / ((1 + (annualRate / 12))^360 - 1)
-  expect_equal(actual, expected)
-})
-
-test_that("computeAccumulatedValueOfRent works as expected for time horizon under 30 years", {
-  initialAnnualRent = 100
-  rentIncrease = .01
-  marketRate = .05
-  time = 20
-  incomeTax = .3
-  annualMortgage = 40
-  fees = .07
-
-  actual <- computeAccumulatedValueOfRent(initialAnnualRentPayment = initialAnnualRent,
-                                          rentIncreaseRate = rentIncrease,
-                                          marketReturn = marketRate, 
-                                          timeHorizon = time, 
-                                          topIncomeTaxRate = incomeTax, 
-                                          annualMortgagePayment = annualMortgage, 
-                                          managementFees = fees)
+test_that("computeHandValue works as expected", {
+  sampleHand1 <- c("A", "9")
+  sampleHand2 <- c("A", "A", "A")
+  sampleHand3 <- c("A", "10", "A", "A", "A", "A", "A", "10")
+  sampleHand4 <- c("10", "9")
+  sampleHand5 <- c("10", "9", "5")
   
-  expected <- (initialAnnualRent - annualMortgage) * (1 - incomeTax) * (1 - fees) * 
-    ((1 + marketRate)^time - (1 + rentIncrease)^time) / (marketRate - rentIncrease)
+  actual <- c(computeHandValue(sampleHand1), 
+              computeHandValue(sampleHand2), 
+              computeHandValue(sampleHand3),
+              computeHandValue(sampleHand4),
+              computeHandValue(sampleHand5))
+  
+  expected <- c(20, 13, 26, 19, 24)
+  
   expect_equal(actual, expected)
 })
 
-test_that("computeAccumulatedValueOfRent works as expected for time horizon over 30 years", {
-  initialAnnualRent = 100
-  rentIncrease = .01
-  marketRate = .05
-  time = 35
-  incomeTax = .3
-  annualMortgage = 40
-  management = .07
-
-   actual <- computeAccumulatedValueOfRent(initialAnnualRentPayment = initialAnnualRent,
-                                          rentIncreaseRate = rentIncrease,
-                                          marketReturn = marketRate, 
-                                          timeHorizon = time, 
-                                          topIncomeTaxRate = incomeTax, 
-                                          annualMortgagePayment = annualMortgage, 
-                                          managementFees = management)
+test_that("dealerStrategy works as expected", {
+  sampleHand1 <- c("A", "9")
+  sampleHand2 <- c("A", "A", "A")
+  sampleHand3 <- c("10", "9")
+  sampleHand4 <- c("10", "6", "1")
+  sampleHand5 <- c("10", "3", "3", "A")
   
-  expected <- 
-    
-    (((initialAnnualRent - annualMortgage) * (1 - incomeTax) * (1 - management) *
-    ((1 + marketRate)^30 - (1 + rentIncrease)^30) / (marketRate - rentIncrease))) * (1 + marketRate)^(time - 30) + 
-    
-    
-    (initialAnnualRent * (1 + rentIncrease)^30 * (1 - incomeTax) * (1 - management)) *
-    (((1 + marketRate)^(time - 30) - (1 + rentIncrease)^(time - 30)) / (marketRate - rentIncrease))
+  
+  actual <- c(dealerStrategy(sampleHand1), 
+              dealerStrategy(sampleHand2), 
+              dealerStrategy(sampleHand3),
+              dealerStrategy(sampleHand4),
+              dealerStrategy(sampleHand5))
+  
+  expected <- c("Stay", "Hit", "Stay", "Stay", "Hit")
+  
+  expect_equal(actual, expected)
+})
+
+test_that("simulateDealerHand works as expected", {
+  sampleHand1 <- c("A", "9")
+  sampleHand2 <- c("A", "A", "A")
+  sampleHand3 <- c("10", "9")
+  sampleHand4 <- c("10", "6", "1")
+  sampleHand5 <- c("10", "3", "3", "A")
+  
+  simulateDealerHand(dealerCards, shuffledDeck[3:4])
+  
+  
+  actual <- c(dealerStrategy(sampleHand1), 
+              dealerStrategy(sampleHand2), 
+              dealerStrategy(sampleHand3),
+              dealerStrategy(sampleHand4),
+              dealerStrategy(sampleHand5))
+  
+  expected <- c("Stay", "Hit", "Stay", "Stay", "Hit")
+  
   expect_equal(actual, expected)
 })
