@@ -42,24 +42,18 @@ dealerStrategy <- function(nonBustedHand) {
   }
 }
 
-simulateDealerHand <- function(dealerCards, deck) {
-  if(dealerStrategy(dealerCards) == "Stay") {
-    return(list(computeHandValue(dealerCards), length(dealerCards))) #first element in list is total value of dealer's hand and the second element is the number of cards dealt to dealer
-  }
-  else {
-    return(simulateDealerHand(c(dealerCards, dealCards(deck, 1)), deck[-1]))
-  }
+playerStrategy <- function(nonBustedHand, dealerFaceCard) {
+  if ("A" %in% nonBustedHand == FALSE) {
+    if(computeHandValue(nonBustedHand) %in% c(21, 20, 19, 18, 17) | 
+       computeHandValue(nonBustedHand) %in% c(13, 14, 15, 16) & dealerFaceCard < 7) | 
+       computeHandValue(nonBustedHand) == 12 & dealerFaceCard %in% c(4, 5, 6)) {
+         return("Stay")
+       }
+  } 
 }
-
-
-shuffledDeck <- shuffleDecks(createDecks(1))
-print(shuffledDeck)
-dealerCards <- shuffledDeck[1:2]
-print(dealerCards)
-simulateDealerHand(dealerCards, shuffledDeck)
-
-
-
+doubleDown <- function(deck, hand) {
+  return(computeHandValue(c(dealCards(deck, 1), hand)))
+}
 
 
 

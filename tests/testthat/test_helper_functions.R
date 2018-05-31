@@ -50,22 +50,32 @@ test_that("dealerStrategy works as expected", {
 })
 
 test_that("simulateDealerHand works as expected", {
-  sampleHand1 <- c("A", "9")
-  sampleHand2 <- c("A", "A", "A")
-  sampleHand3 <- c("10", "9")
-  sampleHand4 <- c("10", "6", "1")
-  sampleHand5 <- c("10", "3", "3", "A")
+  set.seed(1)
+  dealerCards1 <- c("A", "9")
+  dealerCards2 <- c("A", "A")
+  dealerCards3 <- c("10", "9")
+  dealerCards4 <- c("10", "6")
+  dealerCards5 <- c("10", "A")
   
-  simulateDealerHand(dealerCards, shuffledDeck[3:4])
+  shuffledDeck <- shuffleDecks(createDecks(1))
   
   
-  actual <- c(dealerStrategy(sampleHand1), 
-              dealerStrategy(sampleHand2), 
-              dealerStrategy(sampleHand3),
-              dealerStrategy(sampleHand4),
-              dealerStrategy(sampleHand5))
+  actualCount <- c(simulateDealerHand(dealerCards1, shuffledDeck)[[1]], 
+                   simulateDealerHand(dealerCards2, shuffledDeck)[[1]], 
+                   simulateDealerHand(dealerCards3, shuffledDeck)[[1]],
+                   simulateDealerHand(dealerCards4, shuffledDeck)[[1]],
+                   simulateDealerHand(dealerCards5, shuffledDeck)[[1]])
   
-  expected <- c("Stay", "Hit", "Stay", "Stay", "Hit")
+  expectedCount <- c(20, 21, 19, 18, 21)
   
-  expect_equal(actual, expected)
+  actualNumberOfCardsDealt <- c(simulateDealerHand(dealerCards1, shuffledDeck)[[2]], 
+                                simulateDealerHand(dealerCards2, shuffledDeck)[[2]], 
+                                simulateDealerHand(dealerCards3, shuffledDeck)[[2]],
+                                simulateDealerHand(dealerCards4, shuffledDeck)[[2]],
+                                simulateDealerHand(dealerCards5, shuffledDeck)[[2]])
+    
+  expectedNumberOfCardsDealt <- c(2, 4, 2, 3, 2)
+    
+  expect_equal(actualCount, expectedCount)
+  expect_equal(actualNumberOfCardsDealt, expectedNumberOfCardsDealt)
 })
